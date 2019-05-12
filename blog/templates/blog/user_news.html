@@ -1,0 +1,70 @@
+{%extends 'blog/main.html'%}
+{% block main_section %}
+<h2>Все статьи от автора {{ view.kwargs.username }}</h2>
+<h4>Количество: {{page_obj.paginator.count}}</h4>
+{% for post in news %}
+<div class="alert alert-light">
+    <h1>{{post.title}}</h1>
+    <p>{{post.text|striptags|truncatechars:200}}</p>
+    <div class="row">
+        <div>
+            {% if  post.author.profile.img %}
+            <img src="{{post.author.profile.img.url}}" alt="{{post.author}}" class="user_image">
+            {% else %}
+            <img src="/pictures/default.jpg" alt="{{post.author}}" class="user_image">
+            {% endif %}
+        </div>
+        <div class="mt-2 ml-1">
+            <span class="text-muted">Дата: {{post.date|date:"d E Y в H:i:s"}}</span>
+            {% if post.author %}
+            <p><b>Автор:</b><a href="{% url 'user-news' post.author %}">{{post.author}}</a></p>
+            {% else %}
+            <p><b>Автор:</b><mark>Админ</mark></p>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'news-detail' post.id %}" class="btn btn-outline-warning">Читать далее</a>
+</div>
+{% endfor %}
+
+
+{% if is_paginated %}
+
+{% if page_obj.has_previous %}
+<a href="?page=1" class="btn btn-outline-warning">Начало</a>
+<a href="?page={{page_obj.previous_page_number}}" class="btn btn-outline-warning">Предыдущая</a>
+{% endif %}
+
+
+{% for num in page_obj.paginator.page_range %}
+
+{% if num == page_obj.number %}
+<button class="btn btn-warning">{{ num }}</button>
+{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'%}
+<a href="?page={{num}}" class="btn btn-outline-warning">{{num}}</a>
+{% endif %}
+
+
+{% endfor %}
+
+
+{% if page_obj.has_next %}
+<a href="?page={{page_obj.next_page_number}}" class="btn btn-outline-warning">Следующая</a>
+<a href="?page={{page_obj.paginator.num_pages}}" class="btn btn-outline-warning">Последняя</a>
+{% endif %}
+
+{% endif %}
+
+{% endblock %}
+
+{% block aside_section %}
+<h3>
+    <p><b>Топ 10 фото недели</b></p>
+</h3>
+<img src="https://images.unsplash.com/photo-1555284023-249222086985?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80"
+    class="img-thumbnail mb-1">
+<p>Каждую неделю мы собираем топ 10 фото по количеству лайков</p>
+<a href="" target="_blank">
+    <button class="btn btn-warning">Посмотреть</button>
+</a>
+{% endblock aside_section %}
