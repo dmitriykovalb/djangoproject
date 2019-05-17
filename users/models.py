@@ -4,11 +4,26 @@ from PIL import Image
 
 
 class Profile(models.Model):
+    """[Create fields of the table]
+
+    Arguments:
+        models {[text,img]} -- [user,img]
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    img = models.ImageField(default='default.jpg', upload_to='user_images')
+    img = models.ImageField(default="default.jpg", upload_to="user_images")
+
+    """[Returns a string representation of the username]
+
+    Returns:
+        [str] -- [Username]
+    """
 
     def __str__(self):
-        return f'Профиль пользователя {self.user.username}'
+        return f"Профиль пользователя {self.user.username}"
+
+    """[save image]
+    """
 
     def save(self):
         super().save()
